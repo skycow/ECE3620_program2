@@ -20,19 +20,23 @@ int main()
 	const int SIZE = 10001;
 	double arrf[SIZE];
 	double arrh[SIZE];
-	double arrfh[SIZE];
+	double arrfh[SIZE*2-1];
 	double arry0[SIZE];
-	double arry[SIZE];
+	double arry[SIZE*2-1];
 	ofstream outfile("Problem3_2");
+	ofstream outfilef("f");
+	ofstream outfileh("h");
+	ofstream outfilefh("fh");
 
 	//create f(t)
 	for (int i = 0; i < SIZE; i ++) {
-		arry[i] = f(i*0.001);
+		arrf[i] = f(i*0.001);
 	}
 
 	//create h(t)
 	for (int i = 0; i < SIZE; i++) {
-		arry[i] = h(i*0.001);
+		arrh[i] = h(i*0.001);
+		//outfile << (t*0.001) << " " << arry[t] << endl;
 	}
 
 	//convolute f and h to create fh
@@ -40,11 +44,21 @@ int main()
 	
 	//create y0
 	initialCond(arry0);
+	//for (int i = 0; i < SIZE; i++) {
+		//outfile << (i*0.001) << " " << arry0[i] << endl;
+	//}
 
 	for (int t = 0; t < SIZE; t++) {
-		arry[t] = arrfh[t] + arry0[t];
-		outfile << (t*0.001) << " " << arry[t] << endl;
-		//cout << arry[t] << endl;
+		arry[t] = arrfh[t]; + arry0[t];
+		outfile << (t*0.001) << "   " << arry[t] << endl;
+		//outfile << t*0.001 << " " << (arry[t]);
+		cout << arry[t] << endl;
+	}
+	for (int t = 0; t < SIZE; t++) {
+		arry[t+SIZE] = arrfh[t+SIZE];
+		//outfile << (t*0.001) << "   " << arry[t] << endl;
+		outfile << t*0.001+10.001 << " " << (arry[t+SIZE])<<endl;
+		cout << arry[t] << endl;
 	}
 
     return 0;
@@ -72,7 +86,7 @@ double f(double t) {
 }
 
 double h(double t) {
-	return (-2 / 153)*exp(-2 * t) + 0.16392*exp(-0.5*t)*cos(6 * t + 85.4261);
+	return (-2 / 153)*exp(-2 * t) + 0.16392*exp(-0.5*t)*cos(6 * t - 85.4261);
 }
 
 void initialCond(double * arry0){
@@ -109,6 +123,7 @@ deltat = (t2 - t1) / n;
 
 
 //outfile << "0" << " " << x[0] << endl;
+	arry0[0] = x[0];
 for (int i = 1; i < n; i++) {
 
 	mattimes(deltat, a, m1);
