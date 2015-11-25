@@ -27,38 +27,43 @@ int main()
 	ofstream outfilef("f");
 	ofstream outfileh("h");
 	ofstream outfilefh("fh");
+	ofstream outfiley0("y0");
 
 	//create f(t)
 	for (int i = 0; i < SIZE; i ++) {
 		arrf[i] = f(i*0.001);
+		outfilef << (i*0.001) << " " << arrf[i] << endl;
 	}
 
 	//create h(t)
 	for (int i = 0; i < SIZE; i++) {
 		arrh[i] = h(i*0.001);
-		//outfile << (t*0.001) << " " << arry[t] << endl;
+		outfileh << (i*0.001) << " " << arrh[i] << endl;
 	}
 
 	//convolute f and h to create fh
 	conv(arrf, SIZE, arrh, SIZE, arrfh);
+	for (int i = 0; i < SIZE*2-1; i++) {
+		outfilefh << (i*0.001) << " " << (0.001*arrfh[i]) << endl;
+	}
 	
 	//create y0
 	initialCond(arry0);
-	//for (int i = 0; i < SIZE; i++) {
-		//outfile << (i*0.001) << " " << arry0[i] << endl;
-	//}
+	for (int i = 0; i < SIZE; i++) {
+		outfiley0 << (i*0.001) << " " << arry0[i] << endl;
+	}
 
 	for (int t = 0; t < SIZE; t++) {
-		arry[t] = arrfh[t]; + arry0[t];
+		arry[t] = (0.001 * arrfh[t]) + arry0[t];
 		outfile << (t*0.001) << "   " << arry[t] << endl;
 		//outfile << t*0.001 << " " << (arry[t]);
-		cout << arry[t] << endl;
+		//cout << arry[t] << endl;
 	}
-	for (int t = 0; t < SIZE; t++) {
-		arry[t+SIZE] = arrfh[t+SIZE];
+	for (int t = 0; t < SIZE-1; t++) {
+		arry[t+SIZE] = (0.001*arrfh[t+SIZE]);
 		//outfile << (t*0.001) << "   " << arry[t] << endl;
 		outfile << t*0.001+10.001 << " " << (arry[t+SIZE])<<endl;
-		cout << arry[t] << endl;
+		//cout << arry[t] << endl;
 	}
 
     return 0;
@@ -94,7 +99,7 @@ double m1[3][3];
 double m2[3][3];
 double I[3][3] = { { 1,0,0 },{ 0,1,0 },{ 0,0,1 } };
 
-double deltat, a1, a2, a3, t1, t2, x[3];
+double deltat, a1, a2, a3, t1, t2, x[3], bigT;
 int n;
 
 cout << "Enter initial condition y0(0) = ";
@@ -103,12 +108,16 @@ cout << "Enter initial condition y1(0) = ";
 cin >> x[1];
 cout << "Enter initial condition y2(0) = ";
 cin >> x[2];
-cout << "Enter number of iterations: ";
-cin >> n;
+cout << "Enter T value: ";
+cin >> bigT;
+//cout << "Enter number of iterations: ";
+//cin >> n;
 cout << "Enter min bound of t: ";
 cin >> t1;
 cout << "Enter max bound of t: ";
 cin >> t2;
+n= (t2 - t1) / bigT+1;
+cout << n;
 cout << "For x'3(t) + a2x3(t) + a1x2(t) + a0x1(t) = 0" << endl;
 cout << "Enter value for a0 in (D-a)y0(t)=0 : ";
 cin >> a1;
@@ -190,33 +199,33 @@ void matvecmult(double m[][3], double *v, double *prod)
 //	int len4 = 5;
 //
 //	leny = conv(f1, len1, f1, len1, y);
-//	cout << "f1*f1 = ";
+//	cout << "(a) f1*f1 = ";
 //	for (int i = 0; i < leny; i++) {
 //		cout << y[i] << " ";
 //	}
 //	cout << endl;
 //	leny = conv(f1, len1, f2, len2, y);
-//	cout << "f1*f2 = ";
+//	cout << "(b) f1*f2 = ";
 //	for (int i = 0; i < leny; i++) {
 //		cout << y[i] << " ";
 //	}
 //	cout << endl;
 //	leny = conv(f1, len1, f3, len3, y);
-//	cout << "f1*f3 = ";
+//	cout << "(c) f1*f3 = ";
 //	for (int i = 0; i < leny; i++) {
 //		cout << y[i] << " ";
 //	}
 //	cout << endl;
 //	leny = conv(f2, len2, f3, len3, y);
-//	cout << "f2*f3 = ";
+//	cout << "(d) f2*f3 = ";
 //	for (int i = 0; i < leny; i++) {
 //		cout << y[i] << " ";
 //	}
 //	cout << endl;
 //	leny = conv(f1, len1, f4, len4, y);
-//	cout << "f1*f4 = ";
+//	cout << "(e) f1*f4 = ";
 //	for (int i = 0; i < leny; i++) {
 //		cout << y[i] << " ";
 //	}
-//	cout << endl;
+//	cout << endl << endl;
 //}
